@@ -3,6 +3,7 @@
 //C11: 1428 % 11 = 9 - Найти среднее значение каждого столбика матрицы.
 
 package com.kpi;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -12,8 +13,8 @@ public class Main {
         //Переменные
         Scanner scan = new Scanner(System.in);
         int n, m, l, k, a, b, count = 1;
-        double avg, avg_temp;
-        String A_ij_length, B_ij_length;
+        double sum;
+        String A_biggest_number, B_biggest_number, C_biggest_number, A_temp, B_temp, A_filling, B_filling, C_filling;
         System.out.print("Определите размер матрицы А.\nВведите кол-во строк: ");
         try {
             m = scan.nextInt();
@@ -24,25 +25,25 @@ public class Main {
             System.out.print("Введите кол-во столбцов: ");
             l = scan.nextInt();
         } catch (InputMismatchException exc) {
-            System.out.println("Количество столбцов или строк не может быть дробным числом!");
+            System.out.println("Количество столбцов или строк должно быть целым числом!");
             return;
         }
+        A_biggest_number = "0";
+        B_biggest_number = "0";
         a = m + k;
         b = n + l;
         double[][] A = new double[m][n];
         double[][] B = new double[k][l];
         double[][] C = new double[a][b];
         //Заполнение матрицы А
-        System.out.println("Не вводите число, сумма символов которого > 7!\nУчтите, что при введении целого числа, нв выводе всё равно получим число типа double с запятой и нулем после введенного числа.\nТо есть при введении целого числа, в нем может быть максимум 5 символов!");
         System.out.println("Заполните поэлементно матрицу А:\n");
         try {
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
                     A[i][j] = scan.nextDouble();
-                    A_ij_length = Double.toString(A[i][j]);
-                    if (A_ij_length.length() > 7) {
-                        System.out.println("Введите число, сумма символов которого <= 7!");
-                        return;
+                    A_temp = Double.toString(A[i][j]);
+                    if (A_temp.length() >= A_biggest_number.length()) {
+                        A_biggest_number = A_temp;
                     }
                 }
             }
@@ -54,12 +55,11 @@ public class Main {
         System.out.println("Заполните поэлементно матрицу В:\n");
         try {
             for (int i = 0; i < k; i++) {
-                for (int j = 0; j < l; j++){
+                for (int j = 0; j < l; j++) {
                     B[i][j] = scan.nextDouble();
-                    B_ij_length = Double.toString(B[i][j]);
-                    if (B_ij_length.length() > 7) {
-                        System.out.println("Введите число, сумма символов которого <= 7!");
-                        return;
+                    B_temp = Double.toString(B[i][j]);
+                    if (B_temp.length() >= B_biggest_number.length()) {
+                        B_biggest_number = B_temp;
                     }
                 }
             }
@@ -68,84 +68,81 @@ public class Main {
             return;
         }
         //Вывод матрицы А
+        A_filling = "%" + A_biggest_number.length() + "s";
         System.out.println("Матрица А:");
         for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++){
+            for (int j = 0; j < n; j++) {
                 if (j == 0) {
                     System.out.print("| ");
-                    System.out.printf("%7s", A[i][j]);
+                    System.out.printf(A_filling, A[i][j]);
                     System.out.print(" ");
-                }
-                else if (n - j == 1){
-                    System.out.printf("%7s", A[i][j]);
+                } else if (n - j == 1) {
+                    System.out.printf(A_filling, A[i][j]);
                     System.out.println(" |");
-                }
-                else {
-                    System.out.printf("%7s", A[i][j]);
+                } else {
+                    System.out.printf(A_filling, A[i][j]);
                     System.out.print(" ");
                 }
             }
         }
         //Вывод матрицы B
+        B_filling = "%" + B_biggest_number.length() + "s";
         System.out.println("Матрица B:");
         for (int i = 0; i < k; i++) {
-            for (int j = 0; j < l; j++){
+            for (int j = 0; j < l; j++) {
                 if (j == 0) {
                     System.out.print("| ");
-                    System.out.printf("%7s", B[i][j]);
+                    System.out.printf(B_filling, B[i][j]);
                     System.out.print(" ");
-                }
-                else if (l - j == 1){
-                    System.out.printf("%7s", B[i][j]);
+                } else if (l - j == 1) {
+                    System.out.printf(B_filling, B[i][j]);
                     System.out.println(" |");
-                }
-                else {
-                    System.out.printf("%7s", B[i][j]);
+                } else {
+                    System.out.printf(B_filling, B[i][j]);
                     System.out.print(" ");
                 }
             }
         }
         //Выполнение операции "Прямая сумма"
-        for (int i = 0; i < a; i++){
+        for (int i = 0; i < a; i++) {
             for (int j = 0; j < b; j++) {
-                if (j < n && i < m){
+                if (j < n && i < m) {
                     C[i][j] = A[i][j];
-                }
-                else if (j >= n && i >= m) {
+                } else if (j >= n && i >= m) {
                     C[i][j] = B[i - m][j - n];
-                }
-                else{
-                    C[i][j] = 0;
                 }
             }
         }
         //Вывод матрицы C
+        if (B_biggest_number.length() >= A_biggest_number.length()) {
+            C_biggest_number = B_biggest_number;
+        } else {
+            C_biggest_number = A_biggest_number;
+        }
+        C_filling = "%" + C_biggest_number.length() + "s";
         System.out.println("Матрица C:");
         for (int i = 0; i < a; i++) {
-            for (int j = 0; j < b; j++){
+            for (int j = 0; j < b; j++) {
                 if (j == 0) {
                     System.out.print("| ");
-                    System.out.printf("%7s", C[i][j]);
+                    System.out.printf(C_filling, C[i][j]);
                     System.out.print(" ");
-                }
-                else if (b - j == 1){
-                    System.out.printf("%7s", C[i][j]);
+                } else if (b - j == 1) {
+                    System.out.printf(C_filling, C[i][j]);
                     System.out.print(" |\n");
-                }
-                else {
-                    System.out.printf("%7s", C[i][j]);
+                } else {
+                    System.out.printf(C_filling, C[i][j]);
                     System.out.print(" ");
                 }
             }
         }
         //Среднее значение каждого столбика
-        for (int j = 0; j < b; j++){
-            avg_temp = 0;
-            for (int i = 0; i < a; i++){
-                avg_temp += C[i][j];
+        for (int j = 0; j < b; j++) {
+            sum = 0;
+            for (int i = 0; i < a; i++) {
+                sum += C[i][j];
             }
-            avg = avg_temp / a;
-            System.out.println("Среднее значение "+count+"-го столбика = "+avg);
+            System.out.println("Среднее значение " + count + "-го столбика = " + (sum / a));
             count += 1;
         }
     }
